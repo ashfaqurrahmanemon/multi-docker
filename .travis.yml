@@ -3,7 +3,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t ashfaqurrahmanemon/react-test -f ./client/Dockerfile.dev
+  - docker build -f ./client/Dockerfile.dev -t ashfaqurrahmanemon/react-test
 
 script:
   - docker run ashfaqurrahmanemon/react-test npm test -- --coverage

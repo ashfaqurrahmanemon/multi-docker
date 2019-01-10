@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t ashfaqurrahmanemon/react-test -f ./client/Dockerfile.dev
+
+script:
+  - docker run ashfaqurrahmanemon/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t ashfaqurrahmanemon/multi-client ./client
+  - docker build -t ashfaqurrahmanemon/multi-nginx ./nginx
+  - docker build -t ashfaqurrahmanemon/multi-server ./server
+  - docker build -t ashfaqurrahmanemon/multi-worker ./worker
+  # login to dicker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push -t ashfaqurrahmanemon/multi-client
+  - docker push -t ashfaqurrahmanemon/multi-nginx
+  - docker push -t ashfaqurrahmanemon/multi-server
+  - docker push -t ashfaqurrahmanemon/multi-worker
